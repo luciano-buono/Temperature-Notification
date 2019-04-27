@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "585223755012",
+    "firebase_url": "https://temperature-notification0.firebaseio.com",
+    "project_id": "temperature-notification0",
+    "storage_bucket": "temperature-notification0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585223755012:android:ef1f151d1837c627",
+        "android_client_info": {
+          "package_name": "com.firebase.temperaturenotification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585223755012-mal25q7722tpnocva058091gchbj6rk3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebase.temperaturenotification",
+            "certificate_hash": "99f103ff5e931d8046a572ab8374055b0bf747ea"
+          }
+        },
+        {
+          "client_id": "585223755012-tiolr8khdmp3t0mortpso34am5o51c4c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTnAOfPmAxBzOuXVYMHk-Lv5At6NefpRM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585223755012-tiolr8khdmp3t0mortpso34am5o51c4c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
