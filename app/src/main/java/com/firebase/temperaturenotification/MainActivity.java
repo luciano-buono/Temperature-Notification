@@ -21,7 +21,7 @@ import com.google.firebase.iid.internal.FirebaseInstanceIdInternal;
 public class MainActivity extends AppCompatActivity {
 
     //Notification
-    private static final String CHANNEL_ID = "simplified_coding";
+    public static final String CHANNEL_ID = "simplified_coding";
     private static final String CHANNEL_NAME ="Simplified Coding";
     private static final String CHANNEL_DESC ="Simplified Coding Notifications";
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonNotify).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayNotifications();
+               // displayNotifications();
             }
         });
 
@@ -66,16 +66,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void displayNotifications(){
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this,CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_notification_bell_svgrepo_com)
-                        .setContentTitle("Notif workinkg")
-                        .setContentText("1st notif")
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-
-        notificationManagerCompat.notify(1, mBuilder.build());
-    }
 
 }
