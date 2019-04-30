@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String CHANNEL_ID = "simplified_coding";
     private static final String CHANNEL_NAME ="Simplified Coding";
     private static final String CHANNEL_DESC ="Simplified Coding Notifications";
-
     private TextView textView;
 
     @Override
