@@ -45,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     private List<User> userList;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private static final String TAG = "ProfileActivity";
+    private static final String TAG = "ProfileActivityTAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +78,13 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
                         }
                     }
                 });
+
+        findViewById(R.id.buttonGoToMain).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMainActivity();
+            }
+        });
     }
 
     @Override
@@ -160,6 +167,12 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
 
             }
         });
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     //Sign In Required method

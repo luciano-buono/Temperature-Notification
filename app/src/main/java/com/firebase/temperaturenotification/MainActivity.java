@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String CHANNEL_ID = "simplified_coding";
     private static final String CHANNEL_NAME ="Simplified Coding";
     private static final String CHANNEL_DESC ="Simplified Coding Notifications";
-    private TextView textView;
     String TAG = "MainActivityTAG";
 
     @Override
@@ -42,27 +41,16 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,"Notification Channel created");
         }
 
-        textView= findViewById(R.id.ShowToken);
+
 
         findViewById(R.id.buttonNotify).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // displayNotifications();
+               NotificationHelper.displayNotifications(getApplicationContext(),"Local Notif","Used to see if local works");
             }
         });
 
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if(task.isSuccessful()){
-                            String token = task.getResult().getToken();
 
-                        }else{
-                            textView.setText(task.getException().getMessage());
-                        }
-                    }
-                });
 
 
 

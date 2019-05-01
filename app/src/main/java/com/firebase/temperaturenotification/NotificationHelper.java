@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 public class NotificationHelper {
 
+    private static String TAG = "NotificationHelper";
     public static void displayNotifications(Context context, String title, String body) {
 
         Intent intent = new Intent(context,ProfileActivity.class);
@@ -23,7 +25,9 @@ public class NotificationHelper {
                         .setAutoCancel(true)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        //id:1 es usado para modificar o borrar la notificacion, creo
         notificationManagerCompat.notify(1, mBuilder.build());
+        Log.d(TAG,"Showing Notification");
 
     }
 
