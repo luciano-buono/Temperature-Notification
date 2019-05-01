@@ -2,6 +2,7 @@ package com.firebase.temperaturenotification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -41,7 +42,12 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,"Notification Channel created");
         }
 
-
+        findViewById(R.id.buttonGoToProfile).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startProfileActivity();
+            }
+        });
 
         findViewById(R.id.buttonNotify).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,11 +56,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
     }
 
+    private void startProfileActivity() {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
 
 }

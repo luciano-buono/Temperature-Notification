@@ -21,4 +21,11 @@
         android:layout_alignTop="@+id/buttonNotify"
         android:layout_marginTop="-95dp"
         android:text="TextView" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonGoToProfile"
+        android:text="Go to Prof Act"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>
