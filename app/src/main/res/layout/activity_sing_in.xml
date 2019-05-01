@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SingIn">
+    tools:context=".SignIn">
 
     <LinearLayout
         android:layout_centerInParent="true"
@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
+        android:id="@+id/layoutSignInEmail"
         >
 
 
@@ -40,6 +41,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/layoutSignInEmail"
+        android:layout_centerHorizontal="true"
+
+        >
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_buttonWithGoogle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            android:layout_gravity="center"/>
+
+
 
 
     </LinearLayout>

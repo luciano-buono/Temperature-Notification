@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".SendNotificationsActivity"></activity>
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".SingIn">
+        <activity android:name=".SignIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

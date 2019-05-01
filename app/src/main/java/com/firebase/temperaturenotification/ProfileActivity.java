@@ -6,10 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,19 +28,24 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+    //Google Sign In Variables:
     private FirebaseAuth mAuth;
+    public static final String ANONYMOUS = "anonymous";
+    private GoogleApiClient mGoogleApiClient;
+    private String mUsername;
+
+
     public static final String NODE_USERS = "users";
     private List<User> userList;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-
+    private static final String TAG = "ProfileActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +55,13 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseMessaging.getInstance().subscribeToTopic("updates");
         progressBar = findViewById(R.id.progressBarProfile);
+
+        //Sign In with google
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
+
 
         loadUsers();
 
@@ -66,11 +85,35 @@ public class ProfileActivity extends AppCompatActivity {
         super.onStart();
 
         if (mAuth.getCurrentUser() == null) {
-            Intent intent = new Intent(this, SingIn.class);
+            Intent intent = new Intent(this, SignIn.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.profile_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out_menu:
+                mAuth.signOut();
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                mUsername = ANONYMOUS;
+                startActivity(new Intent(this, SignIn.class));
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     private void saveToken(String token) {
         String email = mAuth.getCurrentUser().getEmail();
@@ -87,7 +130,7 @@ public class ProfileActivity extends AppCompatActivity {
                 });
     }
 
-    private void loadUsers(){
+    private void loadUsers() {
         progressBar.setVisibility(View.VISIBLE);
         userList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerviewProfile);
@@ -98,17 +141,17 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progressBar.setVisibility(View.GONE);
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
 
-                    for(DataSnapshot dsUsers: dataSnapshot.getChildren()){
+                    for (DataSnapshot dsUsers : dataSnapshot.getChildren()) {
                         User user = dsUsers.getValue(User.class);
                         userList.add(user);
                     }
 
-                    UsersAdapter adapter = new UsersAdapter(ProfileActivity.this,userList);
+                    UsersAdapter adapter = new UsersAdapter(ProfileActivity.this, userList);
                     recyclerView.setAdapter(adapter);
-                }else {
-                    Toast.makeText(ProfileActivity.this, "No user found",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProfileActivity.this, "No user found", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -117,5 +160,14 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    //Sign In Required method
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 }
