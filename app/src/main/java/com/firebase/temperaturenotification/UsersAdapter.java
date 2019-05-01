@@ -1,6 +1,7 @@
 package com.firebase.temperaturenotification;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,6 +47,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewEmail = itemView.findViewById(R.id.textviewEmail);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    User user = userList.get(getAdapterPosition());
+                    Intent intent = new Intent(context,SendNotificationsActivity.class);
+                    intent.putExtra("user",user);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }
