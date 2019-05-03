@@ -3,6 +3,7 @@ package com.firebase.temperaturenotification;
 import android.media.AsyncPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ public class SendNotificationsActivity extends AppCompatActivity {
 
     private TextView textView;
     private EditText editTextTitle, editTextBody;
+    private String TAG = "SendNotificationsActivityTAG";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,14 +71,16 @@ public class SendNotificationsActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     Toast.makeText(SendNotificationsActivity.this,response.body().string(), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,"Notification sent");
                 }catch (IOException e){
+                    Log.d(TAG,"IOException");
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                Log.d(TAG,"Notification failed");
             }
         });
 

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.firebase.temperaturenotification">
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_raspberry_pi"
@@ -10,7 +11,8 @@
         android:roundIcon="@drawable/ic_raspberry_pi"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SendNotificationsActivity"></activity>
+        <activity android:name=".TempReadActivity"></activity>
+        <activity android:name=".SendNotificationsActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".SignIn">
             <intent-filter>
@@ -19,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
 
         <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
