@@ -7,10 +7,12 @@
     tools:context=".TempReadActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:id="@+id/recyclerviewTemp"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonGoToMain2"
+        android:layout_marginBottom="100dp">
+
     </android.support.v7.widget.RecyclerView>
 
     <ProgressBar
@@ -24,8 +26,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/buttonGoToMain2"
         android:text="Go to main Activity"
-        android:layout_alignBottom="@id/recyclerviewTemp"
-        android:layout_alignRight="@id/recyclerviewTemp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
 
         />
+
+    <TextView
+        android:id="@+id/datetest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recyclerviewTemp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@+id/buttonGoToMain2"
+        android:text="TextView" />
 </RelativeLayout>

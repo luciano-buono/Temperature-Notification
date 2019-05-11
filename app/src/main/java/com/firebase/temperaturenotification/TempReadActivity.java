@@ -8,24 +8,31 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 
 public class TempReadActivity extends AppCompatActivity {
 
 
-    private List<Temperature> tempList;
+    private List<Temperature> tempList, tempList2;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private static final String TAG = "TempReadActivityTAG";
 
+    //Testing date
+    Temperature temperature2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +49,18 @@ public class TempReadActivity extends AppCompatActivity {
             }
         });
 
+        //Inicializo arregle de temp
+        tempList = new ArrayList<>();
+        tempList2 = new ArrayList<>(); //Testing
+
+
 
     }
 
 
     private void loadUsers() {
         progressBar.setVisibility(View.VISIBLE);
-        tempList = new ArrayList<>();
+
         recyclerView = findViewById(R.id.recyclerviewTemp);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -63,7 +75,12 @@ public class TempReadActivity extends AppCompatActivity {
                     for (DataSnapshot dsTemp : dataSnapshot.getChildren()) {
                         Temperature temperature = dsTemp.getValue(Temperature.class);
                         tempList.add(temperature);
+
+                        //Testing
+                        ParseTempList(temperature);
+                        tempList2.add(temperature2);
                     }
+                    Collections.sort(tempList);
 
                     TempAdapter adapter = new TempAdapter(TempReadActivity.this,tempList);
                     recyclerView.setAdapter(adapter);
@@ -85,6 +102,20 @@ public class TempReadActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
+
+    private void ParseTempList(Temperature temperature){
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyy-mm-dd HH:mm:ss");
+        try {
+            temperature2.date_date = formatter.parse(temperature.date);
+            temperature2.tempValue_tempValue = Double.parseDouble(temperature.tempValue);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
 }

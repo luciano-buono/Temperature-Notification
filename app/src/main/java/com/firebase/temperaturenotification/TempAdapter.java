@@ -35,6 +35,7 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempViewHolder
     public void onBindViewHolder(@NonNull TempViewHolder holder, int position) {
         Temperature temperature = tempList.get(position);
         holder.textViewTemp.setText(temperature.date+": "+temperature.tempValue);
+
     }
 
     @Override
