@@ -30,6 +30,16 @@
         android:layout_alignParentRight="true"
 
         />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonCompareByDate"
+        android:text="Sort by date"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+
+        />
+
 
     <TextView
         android:id="@+id/datetest"
