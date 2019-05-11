@@ -42,6 +42,14 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,"Notification Channel created");
         }
 
+
+        findViewById(R.id.buttonGoToTempRead).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTempReadActivity();
+            }
+        });
+
         findViewById(R.id.buttonGoToProfile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void startProfileActivity() {
         Intent intent = new Intent(this, ProfileActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+    private void startTempReadActivity() {
+        Intent intent = new Intent(this, TempReadActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

@@ -15,10 +15,10 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempViewHolder
 
 
     private Context context;
-    private List<String> tempList;
+    private List<Temperature> tempList;
 
 
-    public TempAdapter(Context context, List<String> tempList) {
+    public TempAdapter(Context context, List<Temperature> tempList) {
         this.context = context;
         this.tempList = tempList;
     }
@@ -33,8 +33,8 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TempViewHolder holder, int position) {
-        String textTemp = tempList.get(position);
-        holder.textViewTemp.setText(textTemp);
+        Temperature temperature = tempList.get(position);
+        holder.textViewTemp.setText(temperature.date+": "+temperature.tempValue);
     }
 
     @Override
