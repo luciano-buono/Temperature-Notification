@@ -1,31 +1,65 @@
 package com.firebase.temperaturenotification;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Comparator;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public class Temperature implements Serializable{
+
+public class Temperature implements Serializable,Comparable<Temperature>{
 
     public String date;
     public String tempValue;
+    public Date dateDate;
+    public Double tempValueDouble;
 
-    public Temperature() {
+
+    public Temperature(){
 
     }
 
-    public Temperature(Date date, Double tempValue) {
-        this.date = getDateString(date);
-        this.tempValue = getTempValueString(tempValue);
+
+    public Temperature(String dateString, String tempValueString) {
+        this.dateDate = getDateDate();
+        this.tempValueDouble = getTempValueDouble();
     }
 
+    /*public Temperature(String date,String tempValue) {
+        this.date = date;
+        this.tempValue = tempValue;
+    }*/
 
-    public static String getDateString(Date date) {
+
+    public  Date getDateDate() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyy-mm-dd HH:mm:ss");
-        return formatter.format(date);
+        try{
+            Date date = formatter.parse(this.date);
+            return date;
+        }catch(ParseException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public static String getTempValueString(Double tempValue) {
-        return String.valueOf(tempValue);
+    @Override
+    public int compareTo(Temperature o) {
+        if (getDateDate() == null || o.getDateDate() == null)
+            return 0;
+        return getDateDate().compareTo(o.getDateDate());
     }
+
+
+    public Double getTempValueDouble() {
+        try {
+            return Double.parseDouble(this.tempValue);
+        }catch (NumberFormatException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
 
 }

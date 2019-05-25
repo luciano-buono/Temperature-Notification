@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 
@@ -35,6 +36,7 @@ public class TempReadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temp_read);
 
+        tempList = new ArrayList<>();
         progressBar = findViewById(R.id.progressBarTemp);
         loadUsers();
 
@@ -45,21 +47,42 @@ public class TempReadActivity extends AppCompatActivity {
             }
         });
 
-
+        //-----------------TESTING------------------//
+        //Me pone los campos de fecha mas actual a la mas vieja
         findViewById(R.id.buttonCompareByDate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Collections.sort(tempList);
-                Collections.sort(tempList, compareByDate);
+                Collections.sort(tempList,Collections.<Temperature>reverseOrder());
+                TempAdapter adapter = new TempAdapter(TempReadActivity.this,tempList);
+                recyclerView.setAdapter(adapter);
+
             }
         });
+        //Sort by temp value
+        findViewById(R.id.buttonCompareByDate).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Collections.sort(tempList, new Comparator<Temperature>() {
+                    @Override
+                    public int compare(Temperature o1, Temperature o2) {
+                        if(o1.getTempValueDouble() == null || o2.getTempValueDouble() == null)
+                            return 0;
+                        return (int)(o1.getTempValueDouble() - o2.getTempValueDouble());
+                    }
+                });
+                TempAdapter adapter = new TempAdapter(TempReadActivity.this,tempList);
+                recyclerView.setAdapter(adapter);
+                return true;
+            }
+        //VER porque no anda el long click
+        });
+
 
         //Inicializo arregle de temp
-        tempList = new ArrayList<>();
         tempList2 = new ArrayList<>(); //Testing
 
 
-
+        //----------END TESTING-----------//
     }
 
     private Comparator compareByDate = new Comparator<Temperature>() {
@@ -74,6 +97,7 @@ public class TempReadActivity extends AppCompatActivity {
 
     private void loadUsers() {
         progressBar.setVisibility(View.VISIBLE);
+
 
         recyclerView = findViewById(R.id.recyclerviewTemp);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -91,10 +115,6 @@ public class TempReadActivity extends AppCompatActivity {
                         tempList.add(temperature);
 
                     }
-
-
-
-
                     TempAdapter adapter = new TempAdapter(TempReadActivity.this,tempList);
                     recyclerView.setAdapter(adapter);
                 } else {
