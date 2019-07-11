@@ -7,7 +7,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 
-public class Temperature implements Serializable,Comparable<Temperature>{
+public class Temperature implements Serializable,Comparable<Temperature>, Comparator<Temperature>{
 
     public String date;
     public String tempValue;
@@ -44,9 +44,16 @@ public class Temperature implements Serializable,Comparable<Temperature>{
 
     @Override
     public int compareTo(Temperature o) {
-        if (getDateDate() == null || o.getDateDate() == null)
+        if (getTempValueDouble() == null || o.getTempValueDouble() == null)
             return 0;
-        return getDateDate().compareTo(o.getDateDate());
+        return getTempValueDouble().compareTo(o.getTempValueDouble());
+    }
+
+
+    public int compare(Temperature o, Temperature o2){
+        if (o2.getDateDate() == null || o.getDateDate() == null)
+            return 0;
+        return o2.getDateDate().compareTo(o.getDateDate());
     }
 
 

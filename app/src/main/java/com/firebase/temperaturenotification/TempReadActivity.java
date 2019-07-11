@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +30,7 @@ public class TempReadActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private static final String TAG = "TempReadActivityTAG";
+    private boolean est;
 
 
     @Override
@@ -39,6 +41,9 @@ public class TempReadActivity extends AppCompatActivity {
         tempList = new ArrayList<>();
         progressBar = findViewById(R.id.progressBarTemp);
         loadUsers();
+        est= true;
+
+
 
         findViewById(R.id.buttonGoToMain2).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,29 +57,53 @@ public class TempReadActivity extends AppCompatActivity {
         findViewById(R.id.buttonCompareByDate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Collections.sort(tempList,Collections.<Temperature>reverseOrder());
-                TempAdapter adapter = new TempAdapter(TempReadActivity.this,tempList);
+
+
+                // Collections.sort(tempList,Collections.<Temperature>reverseOrder());
+                if (est){
+                    Collections.sort(tempList, new Temperature());
+                    est=false;}
+                else {
+                    Collections.reverse(tempList);
+                    est=true; }
+                TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
                 recyclerView.setAdapter(adapter);
 
             }
         });
+
         //Sort by temp value
+        findViewById(R.id.buttonCompareByTemp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (est){
+                    Collections.sort(tempList);
+                    est=false;}
+                else {
+                    Collections.reverse(tempList);
+                    est=true; }
+                TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
+                recyclerView.setAdapter(adapter);
+            }
+        });
+
+
         findViewById(R.id.buttonCompareByDate).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Collections.sort(tempList, new Comparator<Temperature>() {
                     @Override
                     public int compare(Temperature o1, Temperature o2) {
-                        if(o1.getTempValueDouble() == null || o2.getTempValueDouble() == null)
+                        if (o1.getTempValueDouble() == null || o2.getTempValueDouble() == null)
                             return 0;
-                        return (int)(o1.getTempValueDouble() - o2.getTempValueDouble());
+                        return (int) (o1.getTempValueDouble() - o2.getTempValueDouble());
                     }
                 });
-                TempAdapter adapter = new TempAdapter(TempReadActivity.this,tempList);
+                TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
                 recyclerView.setAdapter(adapter);
                 return true;
             }
-        //VER porque no anda el long click
+            //VER porque no anda el long click
         });
 
 
@@ -115,7 +144,7 @@ public class TempReadActivity extends AppCompatActivity {
                         tempList.add(temperature);
 
                     }
-                    TempAdapter adapter = new TempAdapter(TempReadActivity.this,tempList);
+                    TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
                     recyclerView.setAdapter(adapter);
                 } else {
                     Toast.makeText(TempReadActivity.this, "No temperature found", Toast.LENGTH_SHORT).show();
@@ -124,7 +153,7 @@ public class TempReadActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG,"DataBase Error");
+                Log.d(TAG, "DataBase Error");
             }
         });
     }
@@ -135,8 +164,6 @@ public class TempReadActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
-
-
 
 
 }

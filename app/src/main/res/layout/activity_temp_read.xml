@@ -40,14 +40,17 @@
 
         />
 
-
-    <TextView
-        android:id="@+id/datetest"
+    <Button
+        android:id="@+id/buttonCompareByTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/recyclerviewTemp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="28dp"
         android:layout_toStartOf="@+id/buttonGoToMain2"
-        android:text="TextView" />
+        android:layout_toEndOf="@+id/buttonCompareByDate"
+        android:text="Sort temp" />
+
+
 </RelativeLayout>
