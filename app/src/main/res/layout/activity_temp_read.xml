@@ -9,7 +9,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerviewTemp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="509dp"
         android:layout_above="@+id/buttonGoToMain2"
         android:layout_marginBottom="100dp">
 
@@ -21,6 +21,14 @@
         android:layout_centerInParent="true"
         android:id="@+id/progressBarTemp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select a sensor from the menu"
+        android:id="@+id/textview_standby"
+        android:layout_below="@id/progressBarTemp"
+        android:layout_centerHorizontal="true"
+        />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

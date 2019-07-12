@@ -1,5 +1,7 @@
 package com.firebase.temperaturenotification;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Comparator;
@@ -13,7 +15,7 @@ public class Temperature implements Serializable,Comparable<Temperature>, Compar
     public String tempValue;
     public Date dateDate;
     public Double tempValueDouble;
-
+    private String TAG= "TemperatureTAG";
 
     public Temperature(){
 
@@ -35,6 +37,7 @@ public class Temperature implements Serializable,Comparable<Temperature>, Compar
         SimpleDateFormat formatter = new SimpleDateFormat("yyy-mm-dd HH:mm:ss");
         try{
             Date date = formatter.parse(this.date);
+            Log.d(TAG,"parse date"+date);
             return date;
         }catch(ParseException e){
             e.printStackTrace();
@@ -51,9 +54,9 @@ public class Temperature implements Serializable,Comparable<Temperature>, Compar
 
 
     public int compare(Temperature o, Temperature o2){
-        if (o2.getDateDate() == null || o.getDateDate() == null)
+        if (o.getDateDate() == null || o2.getDateDate() == null)
             return 0;
-        return o2.getDateDate().compareTo(o.getDateDate());
+        return o.getDateDate().compareTo(o2.getDateDate());
     }
 
 

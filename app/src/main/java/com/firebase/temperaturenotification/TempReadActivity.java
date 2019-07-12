@@ -6,10 +6,16 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,19 +35,22 @@ public class TempReadActivity extends AppCompatActivity {
     private List<Temperature> tempList, tempList2;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private TextView textview_StandBy;
     private static final String TAG = "TempReadActivityTAG";
-    private boolean est;
+    private boolean est1,est2;
+    private Button b1,b2;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temp_read);
-
         tempList = new ArrayList<>();
         progressBar = findViewById(R.id.progressBarTemp);
-        loadUsers();
-        est= true;
+        textview_StandBy = findViewById(R.id.textview_standby);
+        loadUsers("Temperature");
+        est1= true;
+        est2=true;
 
 
 
@@ -54,18 +63,17 @@ public class TempReadActivity extends AppCompatActivity {
 
         //-----------------TESTING------------------//
         //Me pone los campos de fecha mas actual a la mas vieja
-        findViewById(R.id.buttonCompareByDate).setOnClickListener(new View.OnClickListener() {
+        b1 = findViewById(R.id.buttonCompareByDate);
+        b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 // Collections.sort(tempList,Collections.<Temperature>reverseOrder());
-                if (est){
+                if (est1){
                     Collections.sort(tempList, new Temperature());
-                    est=false;}
+                    est1=false;}
                 else {
                     Collections.reverse(tempList);
-                    est=true; }
+                    est1=true; }
                 TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
                 recyclerView.setAdapter(adapter);
 
@@ -73,15 +81,16 @@ public class TempReadActivity extends AppCompatActivity {
         });
 
         //Sort by temp value
-        findViewById(R.id.buttonCompareByTemp).setOnClickListener(new View.OnClickListener() {
+        b2 = findViewById(R.id.buttonCompareByTemp);
+        b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (est){
+                if (est2){
                     Collections.sort(tempList);
-                    est=false;}
+                    est2=false;}
                 else {
                     Collections.reverse(tempList);
-                    est=true; }
+                    est2=true; }
                 TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
                 recyclerView.setAdapter(adapter);
             }
@@ -112,26 +121,23 @@ public class TempReadActivity extends AppCompatActivity {
 
 
         //----------END TESTING-----------//
+
+
     }
 
-    private Comparator compareByDate = new Comparator<Temperature>() {
-
-        @Override
-        public int compare(Temperature o1, Temperature o2) {
-
-            return 0;
-        }
-    };
 
 
-    private void loadUsers() {
+
+
+
+    private void loadUsers(String Sensor_table) {
         progressBar.setVisibility(View.VISIBLE);
-
+        textview_StandBy.setVisibility(View.GONE);
 
         recyclerView = findViewById(R.id.recyclerviewTemp);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        DatabaseReference dbTemp = FirebaseDatabase.getInstance().getReference("Temperature");
+        DatabaseReference dbTemp = FirebaseDatabase.getInstance().getReference(Sensor_table);
         dbTemp.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -165,5 +171,22 @@ public class TempReadActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.tempread_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.Sensor1_button:
+                loadUsers("Temperature");
+            case R.id.Sensor2_button:
+                //loadUsers("Temperature2");
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
