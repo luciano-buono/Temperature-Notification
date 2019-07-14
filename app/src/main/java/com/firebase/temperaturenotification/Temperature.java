@@ -38,6 +38,7 @@ public class Temperature implements Serializable,Comparable<Temperature>, Compar
         try{
             Date date = formatter.parse(this.date);
             Log.d(TAG,"parse date"+date);
+            this.dateDate = date;
             return date;
         }catch(ParseException e){
             e.printStackTrace();
@@ -47,29 +48,26 @@ public class Temperature implements Serializable,Comparable<Temperature>, Compar
 
     @Override
     public int compareTo(Temperature o) {
-        if (getTempValueDouble() == null || o.getTempValueDouble() == null)
+        if (tempValueDouble== null || o.tempValueDouble== null)
             return 0;
-        return getTempValueDouble().compareTo(o.getTempValueDouble());
+        return tempValueDouble.compareTo(o.tempValueDouble);
     }
 
 
     public int compare(Temperature o, Temperature o2){
-        if (o.getDateDate() == null || o2.getDateDate() == null)
+        if (o.dateDate== null || o2.dateDate == null)
             return 0;
-        return o.getDateDate().compareTo(o2.getDateDate());
+        return o.dateDate.compareTo(o2.dateDate);
     }
 
 
     public Double getTempValueDouble() {
         try {
-            return Double.parseDouble(this.tempValue);
+            this.tempValueDouble= Double.parseDouble(this.tempValue);
+            return this.tempValueDouble;
         }catch (NumberFormatException e){
             e.printStackTrace();
             return null;
         }
     }
-
-
-
-
 }

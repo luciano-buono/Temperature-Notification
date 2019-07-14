@@ -60,5 +60,23 @@
         android:layout_toEndOf="@+id/buttonCompareByDate"
         android:text="Sort temp" />
 
+    <Button
+        android:id="@+id/button_PopUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/buttonCompareByTemp"
+        android:layout_centerHorizontal="true"
+        android:onClick="onButtonShowPopupWindowClick"
+        android:text="PopUp" />
+
+    <Spinner
+        android:id="@+id/spinner_PopUp2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/button_PopUp"
+        android:layout_above="@id/buttonGoToMain2"
+        android:text="Max rows"
+
+        />
 
 </RelativeLayout>

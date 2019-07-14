@@ -4,14 +4,24 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +39,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class TempReadActivity extends AppCompatActivity {
+public class TempReadActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
     private List<Temperature> tempList, tempList2;
@@ -61,7 +71,6 @@ public class TempReadActivity extends AppCompatActivity {
             }
         });
 
-        //-----------------TESTING------------------//
         //Me pone los campos de fecha mas actual a la mas vieja
         b1 = findViewById(R.id.buttonCompareByDate);
         b1.setOnClickListener(new View.OnClickListener() {
@@ -96,33 +105,8 @@ public class TempReadActivity extends AppCompatActivity {
             }
         });
 
-
-        findViewById(R.id.buttonCompareByDate).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Collections.sort(tempList, new Comparator<Temperature>() {
-                    @Override
-                    public int compare(Temperature o1, Temperature o2) {
-                        if (o1.getTempValueDouble() == null || o2.getTempValueDouble() == null)
-                            return 0;
-                        return (int) (o1.getTempValueDouble() - o2.getTempValueDouble());
-                    }
-                });
-                TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
-                recyclerView.setAdapter(adapter);
-                return true;
-            }
-            //VER porque no anda el long click
-        });
-
-
         //Inicializo arregle de temp
         tempList2 = new ArrayList<>(); //Testing
-
-
-        //----------END TESTING-----------//
-
-
     }
 
 
@@ -148,7 +132,8 @@ public class TempReadActivity extends AppCompatActivity {
                     for (DataSnapshot dsTemp : dataSnapshot.getChildren()) {
                         Temperature temperature = dsTemp.getValue(Temperature.class);
                         tempList.add(temperature);
-
+                        temperature.getDateDate();
+                        temperature.getTempValueDouble();
                     }
                     TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
                     recyclerView.setAdapter(adapter);
@@ -189,4 +174,78 @@ public class TempReadActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void onButtonShowPopupWindowClick(View view) {
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_window, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
+
+
+        Spinner spinner = popupView.findViewById(R.id.spinner_PopUp1);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter_spinner = ArrayAdapter.createFromResource(this,
+                R.array.PopUpOptions_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter_spinner);
+        spinner.setOnItemSelectedListener(this);
+    }
+
+
+
+
+
+
+    //Spinner-START
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+
+        switch (pos){
+            case 0:
+                TempAdapter adapter0 = new TempAdapter(TempReadActivity.this, tempList);
+                recyclerView.setAdapter(adapter0);
+                break;
+            case 1:
+                TempAdapter adapter1 = new TempAdapter(TempReadActivity.this, tempList, 5);
+                recyclerView.setAdapter(adapter1);
+                break;
+            case 2:
+                TempAdapter adapter2 = new TempAdapter(TempReadActivity.this, tempList, 3);
+                recyclerView.setAdapter(adapter2);
+                break;
+
+        }
+        // An item was selected. You can retrieve the selected item using
+        // parent.getItemAtPosition(pos)
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
+    //Spinner-END
+
 }

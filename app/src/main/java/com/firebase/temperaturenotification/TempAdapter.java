@@ -19,11 +19,18 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempViewHolder
 
     private Context context;
     private List<Temperature> tempList;
+    private int size;
 
 
     public TempAdapter(Context context, List<Temperature> tempList) {
         this.context = context;
         this.tempList = tempList;
+    }
+
+    public TempAdapter(Context context, List<Temperature> tempList, int size) {
+        this.context = context;
+        this.tempList = tempList;
+        this.size = size;
     }
 
     @NonNull
@@ -43,7 +50,10 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempViewHolder
 
     @Override
     public int getItemCount() {
-        return tempList.size();
+        if (this.size == 0)
+            return tempList.size();
+        else
+            return this.size;
     }
 
 

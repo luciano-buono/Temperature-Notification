@@ -36,4 +36,5 @@
         android:text="Go to TempRead Act"
         android:layout_alignParentBottom="true"
         />
+
 </RelativeLayout>
