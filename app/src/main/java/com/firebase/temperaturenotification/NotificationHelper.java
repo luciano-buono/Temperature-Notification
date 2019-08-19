@@ -8,7 +8,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 public class NotificationHelper {
-
+    public static boolean isNotifEnabled;
     private static String TAG = "NotificationHelper";
     public static void displayNotifications(Context context, String title, String body) {
 
@@ -26,7 +26,9 @@ public class NotificationHelper {
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         //id:1 es usado para modificar o borrar la notificacion, creo
-        notificationManagerCompat.notify(1, mBuilder.build());
+
+        if(isNotifEnabled){
+            notificationManagerCompat.notify(1, mBuilder.build());}
         Log.d(TAG,"Showing Notification");
 
     }

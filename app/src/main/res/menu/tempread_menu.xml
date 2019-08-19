@@ -8,4 +8,8 @@
     <item
         android:id="@+id/Sensor2_button"
         android:title="Sensor 2" />
+
+    <item
+        android:id="@+id/Options_button2"
+        android:title="Options" />
 </menu>

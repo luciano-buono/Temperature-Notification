@@ -3,16 +3,25 @@ package com.firebase.temperaturenotification;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BulletSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
@@ -53,14 +62,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonGoToTempRead).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startTempReadActivity();
+                startActivity(TempReadActivity.class);
             }
         });
 
         findViewById(R.id.buttonGoToProfile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startProfileActivity();
+                startActivity(ProfileActivity.class);
             }
         });
 
@@ -71,19 +80,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
 
-    private void startProfileActivity() {
-        Intent intent = new Intent(this, ProfileActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
-    private void startTempReadActivity() {
-        Intent intent = new Intent(this, TempReadActivity.class);
+    private void startActivity(Class<?> activity){
+        Intent intent = new Intent(this, activity);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainactivity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.Options_button:
+                startActivity(Options_activity.class);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 
 

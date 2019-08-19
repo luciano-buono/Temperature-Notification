@@ -11,7 +11,8 @@
         android:roundIcon="@drawable/ic_raspberry_pi"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TempReadActivity"></activity>
+        <activity android:name=".Options_activity"></activity>
+        <activity android:name=".TempReadActivity" />
         <activity android:name=".SendNotificationsActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".SignIn">

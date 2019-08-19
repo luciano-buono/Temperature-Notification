@@ -2,8 +2,13 @@ package com.firebase.temperaturenotification;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +49,10 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempViewHolder
     @Override
     public void onBindViewHolder(@NonNull TempViewHolder holder, int position) {
         Temperature temperature = tempList.get(position);
-        holder.textViewTemp.setText(temperature.date+": "+temperature.tempValue);
-
+        String s = temperature.date+": "+temperature.tempValue+"ºC";
+        SpannableString ss=  new SpannableString(s);
+        ss.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 21, ss.length(), 0);
+        holder.textViewTemp.setText(ss);
     }
 
     @Override

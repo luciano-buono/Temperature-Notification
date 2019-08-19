@@ -67,7 +67,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         findViewById(R.id.buttonGoToMain2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startMainActivity();
+                startActivity(MainActivity.class);
             }
         });
 
@@ -150,8 +150,9 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
     }
 
 
-    public void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+
+    private void startActivity(Class<?> activity){
+        Intent intent = new Intent(this, activity);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
@@ -170,6 +171,8 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                 loadUsers("Temperature");
             case R.id.Sensor2_button:
                 //loadUsers("Temperature2");
+            case R.id.Options_button2:
+                startActivity(Options_activity.class);
             default:
                 return super.onOptionsItemSelected(item);
         }
