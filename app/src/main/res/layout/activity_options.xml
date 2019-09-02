@@ -37,5 +37,35 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true" />
 
+    <TextView
+        android:id="@+id/textView_Sensors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Elija sensor por defecto:"
+        android:layout_below="@+id/checkBox3"
+        />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_Sensors"
+        android:id="@+id/RadioGroup_Sesonrs"
+        >
+
+        <RadioButton
+            android:id="@+id/radioButton_Sensor1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sensor 1" />
+
+        <RadioButton
+            android:id="@+id/radioButton_Sensor2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sensor 2" />
+    </RadioGroup>
+
 
 </RelativeLayout>

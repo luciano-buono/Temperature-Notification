@@ -1,6 +1,8 @@
 package com.firebase.temperaturenotification;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,13 +44,14 @@ import java.util.List;
 public class TempReadActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
-    private List<Temperature> tempList, tempList2;
+    private List<Temperature> tempList, tempList_2;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private TextView textview_StandBy;
     private static final String TAG = "TempReadActivityTAG";
     private boolean est1,est2;
     private Button b1,b2;
+    public static Integer Sensor_default;
 
 
     @Override
@@ -56,9 +59,21 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temp_read);
         tempList = new ArrayList<>();
+        tempList_2 = new ArrayList<>();
         progressBar = findViewById(R.id.progressBarTemp);
         textview_StandBy = findViewById(R.id.textview_standby);
-        loadUsers("Temperature");
+
+        final SharedPreferences sharedPref = TempReadActivity.this.getSharedPreferences("Sensor_pref", Context.MODE_PRIVATE);
+        Sensor_default = sharedPref.getInt("radiogroup_sensor",0);
+        switch (Sensor_default){
+            case 0:
+                loadUsers("Temperature");
+                break;
+            case 1:
+                loadUsers_2("Temperature_2");
+                break;
+        }
+
         est1= true;
         est2=true;
 
@@ -105,8 +120,6 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        //Inicializo arregle de temp
-        tempList2 = new ArrayList<>(); //Testing
     }
 
 
@@ -128,7 +141,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                 progressBar.setVisibility(View.GONE);
                 if (dataSnapshot.exists()) {
 
-
+                    tempList.clear();//If the list is not empty, clear it before adding more items (Avoid duplicates)
                     for (DataSnapshot dsTemp : dataSnapshot.getChildren()) {
                         Temperature temperature = dsTemp.getValue(Temperature.class);
                         tempList.add(temperature);
@@ -136,6 +149,40 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                         temperature.getTempValueDouble();
                     }
                     TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
+                    recyclerView.setAdapter(adapter);
+                } else {
+                    Toast.makeText(TempReadActivity.this, "No temperature found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "DataBase Error");
+            }
+        });
+    }
+    private void loadUsers_2(String Sensor_table) {
+        progressBar.setVisibility(View.VISIBLE);
+        textview_StandBy.setVisibility(View.GONE);
+
+        recyclerView = findViewById(R.id.recyclerviewTemp);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        DatabaseReference dbTemp = FirebaseDatabase.getInstance().getReference(Sensor_table);
+        dbTemp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressBar.setVisibility(View.GONE);
+                if (dataSnapshot.exists()) {
+
+                    tempList_2.clear();//If the list is not empty, clear it before adding more items (Avoid duplicates)
+                    for (DataSnapshot dsTemp : dataSnapshot.getChildren()) {
+                        Temperature temperature = dsTemp.getValue(Temperature.class);
+                        tempList_2.add(temperature);
+                        temperature.getDateDate();
+                        temperature.getTempValueDouble();
+                    }
+                    TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList_2);
                     recyclerView.setAdapter(adapter);
                 } else {
                     Toast.makeText(TempReadActivity.this, "No temperature found", Toast.LENGTH_SHORT).show();
@@ -169,15 +216,18 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         switch (item.getItemId()) {
             case R.id.Sensor1_button:
                 loadUsers("Temperature");
+                return true;
             case R.id.Sensor2_button:
-                //loadUsers("Temperature2");
+                loadUsers_2("Temperature_2");
+                return true;
             case R.id.Options_button2:
                 startActivity(Options_activity.class);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    //POP up start
     public void onButtonShowPopupWindowClick(View view) {
 
         // inflate the layout of the popup window
@@ -250,5 +300,5 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         // Another interface callback
     }
     //Spinner-END
-
+    //POP up end
 }

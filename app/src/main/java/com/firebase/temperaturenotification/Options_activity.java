@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 public class Options_activity extends AppCompatActivity {
 
@@ -23,27 +25,53 @@ public class Options_activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
-        final CheckBox checkbox_notif = (CheckBox)findViewById(R.id.checkBox_notif);
 
-        final SharedPreferences sharedPref = Options_activity.this.getPreferences(Context.MODE_PRIVATE);
+        //Notifications
+        final CheckBox checkbox_notif = (CheckBox)findViewById(R.id.checkBox_notif);
+        final SharedPreferences sharedPref = Options_activity.this.getSharedPreferences("Sensor_pref",Context.MODE_PRIVATE);
         boolean isMyValueChecked = sharedPref.getBoolean("checkbox_notif", false); //first value -preference name, secend value - default value if checbox not found
         checkbox_notif.setChecked(isMyValueChecked);
 
+
+        //Radiogroup default sensor
+        final RadioGroup rGroup = (RadioGroup)findViewById(R.id.RadioGroup_Sesonrs);
+        int radioGroupValue = sharedPref.getInt("radiogroup_sensor",0);
+        rGroup.getChildAt(radioGroupValue);
+        TempReadActivity.Sensor_default = radioGroupValue;
+
+
+
+// This will get the radiobutton in the radiogroup that is checked
+        rGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                              @Override
+                                              public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                                  switch (checkedId) {
+                                                      case R.id.radioButton_Sensor1:
+                                                          TempReadActivity.Sensor_default = 0;
+                                                          break;
+                                                      case R.id.radioButton_Sensor2:
+                                                          TempReadActivity.Sensor_default = 1;
+                                                          break;
+                                                  }
+                                                  SharedPreferences.Editor editor = sharedPref.edit();
+                                                  editor.putInt("radiogroup_sensor", rGroup.indexOfChild(findViewById(rGroup.getCheckedRadioButtonId())));
+                                                  editor.commit();
+                                              }
+                                          });
+
         checkbox_notif.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-
-                if(isChecked){
-                    NotificationHelper.isNotifEnabled = true;
-                }else{
-                    NotificationHelper.isNotifEnabled = false;
-                }
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean("checkbox_notif", checkbox_notif.isChecked() );
-                editor.commit();
-            }
-        });
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            NotificationHelper.isNotifEnabled = true;
+                        } else {
+                            NotificationHelper.isNotifEnabled = false;
+                        }
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("checkbox_notif", checkbox_notif.isChecked());
+                        editor.commit();
+                    }
+                });
 
         findViewById(R.id.buttonOptions_Tempread).setOnClickListener(new View.OnClickListener() {
             @Override
