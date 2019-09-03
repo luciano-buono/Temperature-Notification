@@ -37,6 +37,7 @@ public class Options_activity extends AppCompatActivity {
         final RadioGroup rGroup = (RadioGroup)findViewById(R.id.RadioGroup_Sesonrs);
         int radioGroupValue = sharedPref.getInt("radiogroup_sensor",0);
         rGroup.getChildAt(radioGroupValue);
+
         TempReadActivity.Sensor_default = radioGroupValue;
 
 

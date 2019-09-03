@@ -76,7 +76,7 @@ public class SignIn extends AppCompatActivity  implements GoogleApiClient.OnConn
         super.onStart();
 
         if (mAuth.getCurrentUser() != null) {
-            startProfileActivity();
+            startMainActivity();
         }
     }
 
@@ -106,7 +106,7 @@ public class SignIn extends AppCompatActivity  implements GoogleApiClient.OnConn
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-                            startProfileActivity();
+                            startMainActivity();
                         } else {//Email is already logged
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 userLogin(email, password);
@@ -128,7 +128,7 @@ public class SignIn extends AppCompatActivity  implements GoogleApiClient.OnConn
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            startProfileActivity();
+                            startMainActivity();
                         } else {
                             progressBar.setVisibility(View.INVISIBLE);
                             Toast.makeText(SignIn.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -138,8 +138,8 @@ public class SignIn extends AppCompatActivity  implements GoogleApiClient.OnConn
     }
 
     //Now it takes to the ProfileAct, this will be changed in the future
-    private void startProfileActivity() {
-        Intent intent = new Intent(this, ProfileActivity.class);
+    private void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
@@ -191,7 +191,7 @@ public class SignIn extends AppCompatActivity  implements GoogleApiClient.OnConn
                             Toast.makeText(SignIn.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            startProfileActivity();
+                            startMainActivity();
                             finish();
                         }
                     }

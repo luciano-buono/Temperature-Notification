@@ -11,35 +11,97 @@ tools:context=".TempReadActivity">
         android:id="@+id/spinner_PopUp1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textview_PopUp"
         android:text="Max rows"
-
-
         />
 
     <TextView
         android:id="@+id/textview_PopUp"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This is a popup window."
+        android:text="Choose max nº of rows"
         android:textSize="22sp"
         />
 
-    <Button
-        android:id="@+id/button_PopUp2"
+    <TextView
+        android:id="@+id/textview_PopUp_Temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textview_PopUp"
-        android:text="Buttontest2"
-        android:layout_toRightOf="@id/spinner_PopUp1"
+        android:text="Choose min and max temp"
+        android:layout_below="@+id/textview_PopUp"
+        android:textSize="22sp"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_PopUp_Temp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textview_PopUp"
+        android:hint="Do it!"
         />
 
-    <Button
-        android:id="@+id/button_PopUp3"
+    <EditText
+        android:id="@+id/edittext_PopUp_TempMin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textview_PopUp"
-        android:text="Buttontest3"
-        android:layout_toRightOf="@id/button_PopUp2"/>
+        android:ems="10"
+        android:inputType="number"
+        android:layout_below="@+id/textview_PopUp_Temp"
+        android:hint="Min temp"
+        />
+
+    <EditText
+        android:id="@+id/edittext_PopUp_TempMax"
+        android:layout_width="wrap_content"
+        android:ems="10"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:inputType="number"
+        android:hint="Max temp"
+        android:layout_below="@+id/textview_PopUp_Temp"
+        />
+
+    <TextView
+        android:id="@+id/textview_PopUp_Date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Choose min and max date"
+        android:layout_below="@+id/edittext_PopUp_TempMin"
+        android:textSize="22sp"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_PopUp_Date"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/edittext_PopUp_TempMin"
+        android:hint="Do it!"
+        />
+
+    <EditText
+        android:id="@+id/edittext_PopUp_DateMin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="date"
+        android:focusable="false"
+        android:clickable="true"
+        android:layout_below="@+id/textview_PopUp_Date"
+        android:hint="Min date"
+        />
+
+    <EditText
+        android:id="@+id/edittext_PopUp_DateMax"
+        android:layout_width="wrap_content"
+        android:ems="10"
+        android:inputType="date"
+        android:focusable="false"
+        android:clickable="true"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:hint="Max date"
+        android:layout_below="@+id/textview_PopUp_Date"
+        />
+
+
 </RelativeLayout>

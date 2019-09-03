@@ -70,4 +70,6 @@ public class Temperature implements Serializable,Comparable<Temperature>, Compar
             return null;
         }
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.firebase.temperaturenotification;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +23,8 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -35,6 +40,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -49,10 +55,18 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
     private ProgressBar progressBar;
     private TextView textview_StandBy;
     private static final String TAG = "TempReadActivityTAG";
-    private boolean est1,est2;
-    private Button b1,b2;
+    private boolean est1, est2;
+    private Button b1, b2;
     public static Integer Sensor_default;
-
+    //Temp and date variables
+    Double TempMax;
+    Double TempMin;
+    int YearMin;
+    int MonthMin;
+    int DayOfMonthMin;
+    int YearMax;
+    int MonthMax;
+    int DayOfMonthMax;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +78,8 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         textview_StandBy = findViewById(R.id.textview_standby);
 
         final SharedPreferences sharedPref = TempReadActivity.this.getSharedPreferences("Sensor_pref", Context.MODE_PRIVATE);
-        Sensor_default = sharedPref.getInt("radiogroup_sensor",0);
-        switch (Sensor_default){
+        Sensor_default = sharedPref.getInt("radiogroup_sensor", 0);
+        switch (Sensor_default) {
             case 0:
                 loadUsers("Temperature");
                 break;
@@ -73,10 +87,9 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                 loadUsers_2("Temperature_2");
                 break;
         }
-
-        est1= true;
-        est2=true;
-
+        //Used for Temperature sorting
+        est1 = true;
+        est2 = true;
 
 
         findViewById(R.id.buttonGoToMain2).setOnClickListener(new View.OnClickListener() {
@@ -86,18 +99,19 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        //Me pone los campos de fecha mas actual a la mas vieja
+        //Sort by date
         b1 = findViewById(R.id.buttonCompareByDate);
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Collections.sort(tempList,Collections.<Temperature>reverseOrder());
-                if (est1){
+                if (est1) {
                     Collections.sort(tempList, new Temperature());
-                    est1=false;}
-                else {
+                    est1 = false;
+                } else {
                     Collections.reverse(tempList);
-                    est1=true; }
+                    est1 = true;
+                }
                 TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
                 recyclerView.setAdapter(adapter);
 
@@ -109,22 +123,19 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (est2){
+                if (est2) {
                     Collections.sort(tempList);
-                    est2=false;}
-                else {
+                    est2 = false;
+                } else {
                     Collections.reverse(tempList);
-                    est2=true; }
+                    est2 = true;
+                }
                 TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
                 recyclerView.setAdapter(adapter);
             }
         });
 
     }
-
-
-
-
 
 
     private void loadUsers(String Sensor_table) {
@@ -161,6 +172,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
             }
         });
     }
+
     private void loadUsers_2(String Sensor_table) {
         progressBar.setVisibility(View.VISIBLE);
         textview_StandBy.setVisibility(View.GONE);
@@ -197,8 +209,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
     }
 
 
-
-    private void startActivity(Class<?> activity){
+    private void startActivity(Class<?> activity) {
         Intent intent = new Intent(this, activity);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -227,6 +238,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                 return super.onOptionsItemSelected(item);
         }
     }
+
     //POP up start
     public void onButtonShowPopupWindowClick(View view) {
 
@@ -256,7 +268,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-
+        //SPINNER
         Spinner spinner = popupView.findViewById(R.id.spinner_PopUp1);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter_spinner = ArrayAdapter.createFromResource(this,
@@ -266,18 +278,104 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter_spinner);
         spinner.setOnItemSelectedListener(this);
-    }
 
+        //EDITTEXT
+        final EditText edittext_PopUp_TempMin = popupView.findViewById(R.id.edittext_PopUp_TempMin);
+        edittext_PopUp_TempMin.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                TempMin = Double.parseDouble(edittext_PopUp_TempMin.getText().toString());
+            }
 
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        final EditText edittext_PopUp_TempMax = popupView.findViewById(R.id.edittext_PopUp_TempMax);
+        edittext_PopUp_TempMax.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                TempMax = Double.parseDouble(edittext_PopUp_TempMax.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        final EditText edittext_PopUp_DateMin = popupView.findViewById(R.id.edittext_PopUp_DateMin);
+        edittext_PopUp_DateMin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentDate = Calendar.getInstance();
+                int mYear = mcurrentDate.get(Calendar.YEAR);
+                int mMonth = mcurrentDate.get(Calendar.MONTH);
+                int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog mDatePicker = new DatePickerDialog(TempReadActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        YearMin = year;
+                        MonthMin = month;
+                        DayOfMonthMin = dayOfMonth;
+                        edittext_PopUp_DateMin.setText(YearMin+"/"+MonthMin+"/"+DayOfMonthMin);
+                    }
+                }, mYear, mMonth, mDay);
+                mDatePicker.setTitle("Select date");
+                mDatePicker.show();
+            }
+        });
+
+        final EditText edittext_PopUp_DateMax = popupView.findViewById(R.id.edittext_PopUp_DateMax);
+        edittext_PopUp_DateMax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentDate = Calendar.getInstance();
+                int mYear = mcurrentDate.get(Calendar.YEAR);
+                int mMonth = mcurrentDate.get(Calendar.MONTH);
+                int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog mDatePicker = new DatePickerDialog(TempReadActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        YearMax = year;
+                        MonthMax = month;
+                        DayOfMonthMax = dayOfMonth;
+                        edittext_PopUp_DateMax.setText(YearMax+"/"+MonthMax+"/"+DayOfMonthMax);
+                    }
+                }, mYear, mMonth, mDay);
+                mDatePicker.setTitle("Select date");
+                mDatePicker.show();
+
+            }
+        });
+
+        popupView.findViewById(R.id.button_PopUp_Temp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //List<Temperature> tempListTEMP
+            }
+        });
+
+    }//End-PopUp
 
 
     //Spinner-START
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
 
-        switch (pos){
+        switch (pos) {
             case 0:
                 TempAdapter adapter0 = new TempAdapter(TempReadActivity.this, tempList);
                 recyclerView.setAdapter(adapter0);
