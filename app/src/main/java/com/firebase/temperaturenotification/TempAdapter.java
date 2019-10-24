@@ -49,7 +49,7 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempViewHolder
     @Override
     public void onBindViewHolder(@NonNull TempViewHolder holder, int position) {
         Temperature temperature = tempList.get(position);
-        String s = temperature.date+": "+temperature.tempValue+"ºC";
+        String s = temperature.dateDate+": "+temperature.tempValue+"ºC";
         SpannableString ss=  new SpannableString(s);
         ss.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 21, ss.length(), 0);
         holder.textViewTemp.setText(ss);

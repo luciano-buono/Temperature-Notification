@@ -39,18 +39,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
 public class TempReadActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
-    private List<Temperature> tempList, tempList_2;
+    private List<Temperature> tempList, tempList_2, tempList_Temp, tempList_Date;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private TextView textview_StandBy;
@@ -67,6 +71,8 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
     int YearMax;
     int MonthMax;
     int DayOfMonthMax;
+    Date dateMin;
+    Date dateMax;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +83,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         progressBar = findViewById(R.id.progressBarTemp);
         textview_StandBy = findViewById(R.id.textview_standby);
 
+        //Preferencias guardadas para mostrar el ultimo sensor abierto al reabrir la actividad
         final SharedPreferences sharedPref = TempReadActivity.this.getSharedPreferences("Sensor_pref", Context.MODE_PRIVATE);
         Sensor_default = sharedPref.getInt("radiogroup_sensor", 0);
         switch (Sensor_default) {
@@ -186,7 +193,6 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progressBar.setVisibility(View.GONE);
                 if (dataSnapshot.exists()) {
-
                     tempList_2.clear();//If the list is not empty, clear it before adding more items (Avoid duplicates)
                     for (DataSnapshot dsTemp : dataSnapshot.getChildren()) {
                         Temperature temperature = dsTemp.getValue(Temperature.class);
@@ -222,6 +228,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         return true;
     }
 
+    //Opciones. 3 puntitos
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -239,7 +246,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
-    //POP up start
+    //POP up start-----------------------------------
     public void onButtonShowPopupWindowClick(View view) {
 
         // inflate the layout of the popup window
@@ -268,7 +275,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        //SPINNER
+        //SPINNER- Para mostrar 3, 5 o All. Componentes del recyclerView
         Spinner spinner = popupView.findViewById(R.id.spinner_PopUp1);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter_spinner = ArrayAdapter.createFromResource(this,
@@ -279,7 +286,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         spinner.setAdapter(adapter_spinner);
         spinner.setOnItemSelectedListener(this);
 
-        //EDITTEXT
+        //EditText para poner los 4 valores. 2 de temperatura min y max. 2 de fecha min y max
         final EditText edittext_PopUp_TempMin = popupView.findViewById(R.id.edittext_PopUp_TempMin);
         edittext_PopUp_TempMin.addTextChangedListener(new TextWatcher() {
             @Override
@@ -330,6 +337,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                         MonthMin = month;
                         DayOfMonthMin = dayOfMonth;
                         edittext_PopUp_DateMin.setText(YearMin+"/"+MonthMin+"/"+DayOfMonthMin);
+                        dateMin = new GregorianCalendar(YearMin,MonthMin,DayOfMonthMin).getTime();
                     }
                 }, mYear, mMonth, mDay);
                 mDatePicker.setTitle("Select date");
@@ -353,6 +361,8 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                         MonthMax = month;
                         DayOfMonthMax = dayOfMonth;
                         edittext_PopUp_DateMax.setText(YearMax+"/"+MonthMax+"/"+DayOfMonthMax);
+                        dateMax = new GregorianCalendar(YearMax,MonthMax,DayOfMonthMax).getTime();
+
                     }
                 }, mYear, mMonth, mDay);
                 mDatePicker.setTitle("Select date");
@@ -361,17 +371,63 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
+        //Botones para darle el OK a mostrar solo los elementos que cumplen la Temp o Fecha buscada
         popupView.findViewById(R.id.button_PopUp_Temp).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //List<Temperature> tempListTEMP
+                tempList_Temp = new ArrayList<>();
+                tempList_Temp.clear();
+                if (TempMax == null || TempMin == null){
+                    Toast.makeText(TempReadActivity.this, "Select min and max temp", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    for (int i=0; i<tempList.size(); i++) {
+                        if(tempList.get(i).tempValueDouble <= TempMax && tempList.get(i).tempValueDouble >= TempMin){
+                            tempList_Temp.add(tempList.get(i));
+                        }
+                    }
+                }
+
+                if (tempList_Temp.size() == 0){
+                    Toast.makeText(TempReadActivity.this, "No results found", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList_Temp);
+                    recyclerView.setAdapter(adapter);
+                }
+
             }
         });
 
-    }//End-PopUp
+        popupView.findViewById(R.id.button_PopUp_Date).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempList_Date= new ArrayList<>();
+                //Lo limpio para que no queden valores de anteriores busquedas
+                tempList_Date.clear();
+                //User desired date converted into Date format
+//                SimpleDateFormat formatter = new SimpleDateFormat("yyy-mm-dd HH:mm:ss");
+//                try{
+//                    Date date = formatter.parse(this.date);
+//                    Log.d(TAG,"parse date"+date);
+//                }catch(ParseException e){
+//                    e.printStackTrace();
+//                }
+                dateMax = new GregorianCalendar(YearMax,MonthMax,DayOfMonthMax).getTime();
+                for (int i=0; i<tempList.size(); i++) {
+                    if(tempList.get(i).dateDate.after(dateMax) && tempList.get(i).dateDate.before(dateMin)){
+                        tempList_Date.add(tempList.get(i));
+                    }
+                }
+                TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList_Date);
+                recyclerView.setAdapter(adapter);
+            }
+        });
+
+    }//End-PopUp-------------------------------------
 
 
-    //Spinner-START
+    //Spinner-START. Para definir la maxima cantida de elementos a mostrar en el recycler
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
 

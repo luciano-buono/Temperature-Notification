@@ -1,12 +1,15 @@
 package com.firebase.temperaturenotification;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 
 public class Temperature implements Serializable,Comparable<Temperature>, Comparator<Temperature>{
@@ -35,8 +38,9 @@ public class Temperature implements Serializable,Comparable<Temperature>, Compar
 
     public  Date getDateDate() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyy-mm-dd HH:mm:ss");
+        Date date = new Date();
         try{
-            Date date = formatter.parse(this.date);
+            date = formatter.parse(this.date);
             Log.d(TAG,"parse date"+date);
             this.dateDate = date;
             return date;
