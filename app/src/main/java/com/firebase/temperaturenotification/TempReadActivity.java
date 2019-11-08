@@ -54,12 +54,12 @@ import java.util.List;
 public class TempReadActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
-    private List<Temperature> tempList, tempList_2, tempList_Temp, tempList_Date;
+    private List<Temperature> tempList, tempList_2, tempList_Temp, tempList_Date, tempList_temporal;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private TextView textview_StandBy;
     private static final String TAG = "TempReadActivityTAG";
-    private boolean est1, est2;
+    private boolean est1, est2;// For sorting by date and temp
     private Button b1, b2;
     public static Integer Sensor_default;
     //Temp and date variables
@@ -71,6 +71,7 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
     int YearMax;
     int MonthMax;
     int DayOfMonthMax;
+    int SensorNumber;
     Date dateMin;
     Date dateMax;
 
@@ -88,10 +89,10 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         Sensor_default = sharedPref.getInt("radiogroup_sensor", 0);
         switch (Sensor_default) {
             case 0:
-                loadUsers("Temperature");
+                loadUsers("Temperature", tempList,1);
                 break;
             case 1:
-                loadUsers_2("Temperature_2");
+                loadUsers("Temperature_2", tempList_2,2);
                 break;
         }
         //Used for Temperature sorting
@@ -111,33 +112,53 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Collections.sort(tempList,Collections.<Temperature>reverseOrder());
-                if (est1) {
-                    Collections.sort(tempList, new Temperature());
-                    est1 = false;
-                } else {
-                    Collections.reverse(tempList);
-                    est1 = true;
+                tempList_temporal = new ArrayList<>();
+                tempList_temporal.clear();
+                switch (SensorNumber){
+                    case 1:
+                        tempList_temporal = tempList;
+                        break;
+                    case 2:
+                        tempList_temporal = tempList_2;
+                        break;
                 }
-                TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
+                if (est2) {
+                    Collections.sort(tempList_temporal, new Temperature());
+                    est2 = false;
+                } else {
+                    Collections.reverse(tempList_temporal);
+                    est2 = true;
+                }
+                TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList_temporal);
                 recyclerView.setAdapter(adapter);
-
             }
         });
+
+
 
         //Sort by temp value
         b2 = findViewById(R.id.buttonCompareByTemp);
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tempList_temporal = new ArrayList<>();
+                tempList_temporal.clear();
+                switch (SensorNumber){
+                    case 1:
+                        tempList_temporal = tempList;
+                        break;
+                    case 2:
+                        tempList_temporal = tempList_2;
+                        break;
+                }
                 if (est2) {
-                    Collections.sort(tempList);
+                            Collections.sort(tempList_temporal);
                     est2 = false;
                 } else {
-                    Collections.reverse(tempList);
+                            Collections.reverse(tempList_temporal);
                     est2 = true;
                 }
-                TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
+                TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList_temporal);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -145,7 +166,8 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
     }
 
 
-    private void loadUsers(String Sensor_table) {
+    private void loadUsers(String Sensor_table, final List<Temperature> list, int sensorNumber) {
+        SensorNumber = sensorNumber;
         progressBar.setVisibility(View.VISIBLE);
         textview_StandBy.setVisibility(View.GONE);
 
@@ -159,14 +181,14 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                 progressBar.setVisibility(View.GONE);
                 if (dataSnapshot.exists()) {
 
-                    tempList.clear();//If the list is not empty, clear it before adding more items (Avoid duplicates)
+                    list.clear();//If the list is not empty, clear it before adding more items (Avoid duplicates)
                     for (DataSnapshot dsTemp : dataSnapshot.getChildren()) {
                         Temperature temperature = dsTemp.getValue(Temperature.class);
-                        tempList.add(temperature);
+                        list.add(temperature);
                         temperature.getDateDate();
                         temperature.getTempValueDouble();
                     }
-                    TempAdapter adapter = new TempAdapter(TempReadActivity.this, tempList);
+                    TempAdapter adapter = new TempAdapter(TempReadActivity.this, list);
                     recyclerView.setAdapter(adapter);
                 } else {
                     Toast.makeText(TempReadActivity.this, "No temperature found", Toast.LENGTH_SHORT).show();
@@ -233,10 +255,10 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.Sensor1_button:
-                loadUsers("Temperature");
+                loadUsers("Temperature", tempList,1);
                 return true;
             case R.id.Sensor2_button:
-                loadUsers_2("Temperature_2");
+                loadUsers("Temperature_2",tempList_2,2);
                 return true;
             case R.id.Options_button2:
                 startActivity(Options_activity.class);
@@ -361,7 +383,6 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                         MonthMax = month;
                         DayOfMonthMax = dayOfMonth;
                         edittext_PopUp_DateMax.setText(YearMax+"/"+MonthMax+"/"+DayOfMonthMax);
-                        dateMax = new GregorianCalendar(YearMax,MonthMax,DayOfMonthMax).getTime();
 
                     }
                 }, mYear, mMonth, mDay);
@@ -377,13 +398,26 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
             public void onClick(View v) {
                 tempList_Temp = new ArrayList<>();
                 tempList_Temp.clear();
+                List<Temperature> tempList_Temporal;
+                tempList_Temporal = new ArrayList<>();
+                tempList_Temporal.clear();
+
+                switch (SensorNumber){
+                    case 1:
+                        tempList_Temporal = tempList;
+                        break;
+                    case 2:
+                        tempList_Temporal = tempList_2;
+                        break;
+                }
+
                 if (TempMax == null || TempMin == null){
                     Toast.makeText(TempReadActivity.this, "Select min and max temp", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    for (int i=0; i<tempList.size(); i++) {
-                        if(tempList.get(i).tempValueDouble <= TempMax && tempList.get(i).tempValueDouble >= TempMin){
-                            tempList_Temp.add(tempList.get(i));
+                    for (int i=0; i<tempList_Temporal.size(); i++) {
+                        if(tempList_Temporal.get(i).tempValueDouble <= TempMax && tempList_Temporal.get(i).tempValueDouble >= TempMin){
+                            tempList_Temp.add(tempList_Temporal.get(i));
                         }
                     }
                 }
@@ -405,17 +439,13 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
                 tempList_Date= new ArrayList<>();
                 //Lo limpio para que no queden valores de anteriores busquedas
                 tempList_Date.clear();
-                //User desired date converted into Date format
-//                SimpleDateFormat formatter = new SimpleDateFormat("yyy-mm-dd HH:mm:ss");
-//                try{
-//                    Date date = formatter.parse(this.date);
-//                    Log.d(TAG,"parse date"+date);
-//                }catch(ParseException e){
-//                    e.printStackTrace();
-//                }
+
+                dateMin = new GregorianCalendar(YearMin,MonthMin,DayOfMonthMin).getTime();
                 dateMax = new GregorianCalendar(YearMax,MonthMax,DayOfMonthMax).getTime();
                 for (int i=0; i<tempList.size(); i++) {
-                    if(tempList.get(i).dateDate.after(dateMax) && tempList.get(i).dateDate.before(dateMin)){
+                    //No muestra si el dia es = al mayor o menor. Solo si esta dentro de ese invervalo
+                    if( (tempList.get(i).dateDate.before(dateMax) && tempList.get(i).dateDate.after(dateMin))
+                            || tempList.get(i).dateDate.equals(dateMin) ||tempList.get(i).dateDate.equals(dateMax)  ){
                         tempList_Date.add(tempList.get(i));
                     }
                 }
@@ -431,17 +461,27 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
 
+        tempList_temporal = new ArrayList<>();
+        tempList_temporal.clear();
+        switch (SensorNumber){
+            case 1:
+                tempList_temporal = tempList;
+                break;
+            case 2:
+                tempList_temporal = tempList_2;
+                break;
+        }
         switch (pos) {
             case 0:
-                TempAdapter adapter0 = new TempAdapter(TempReadActivity.this, tempList);
+                TempAdapter adapter0 = new TempAdapter(TempReadActivity.this, tempList_temporal);
                 recyclerView.setAdapter(adapter0);
                 break;
             case 1:
-                TempAdapter adapter1 = new TempAdapter(TempReadActivity.this, tempList, 5);
+                TempAdapter adapter1 = new TempAdapter(TempReadActivity.this, tempList_temporal, 5);
                 recyclerView.setAdapter(adapter1);
                 break;
             case 2:
-                TempAdapter adapter2 = new TempAdapter(TempReadActivity.this, tempList, 3);
+                TempAdapter adapter2 = new TempAdapter(TempReadActivity.this, tempList_temporal, 3);
                 recyclerView.setAdapter(adapter2);
                 break;
 
@@ -455,4 +495,9 @@ public class TempReadActivity extends AppCompatActivity implements AdapterView.O
     }
     //Spinner-END
     //POP up end
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

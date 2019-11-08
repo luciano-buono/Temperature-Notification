@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,"Notification Channel created");
         }
 
+        findViewById(R.id.textview_Welcome);
 
         findViewById(R.id.buttonGoToTempRead).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +105,9 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.Options_button:
                 startActivity(Options_activity.class);
-            default:
+//            case R.id.Debug_button:
+//               startActivity();
+                default:
                 return super.onOptionsItemSelected(item);
         }
     }

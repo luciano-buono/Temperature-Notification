@@ -29,53 +29,44 @@
         android:layout_below="@id/progressBarTemp"
         android:layout_centerHorizontal="true"
         />
+
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/buttonGoToMain2"
-        android:text="Go to main Activity"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-
-        />
-    <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonCompareByDate"
-        android:text="Sort by date"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="0dp"
+        android:text="Main Activity"
 
         />
+
+    <Button
+        android:id="@+id/buttonCompareByDate"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="0dp"
+        android:text="Sort by date" />
 
     <Button
         android:id="@+id/buttonCompareByTemp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/recyclerviewTemp"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="28dp"
-        android:layout_toStartOf="@+id/buttonGoToMain2"
-        android:layout_toEndOf="@+id/buttonCompareByDate"
-        android:text="Sort temp" />
+        android:layout_height="35dp"
+        android:layout_toRightOf="@id/buttonCompareByDate"
+        android:layout_alignParentBottom="true"
+        android:text="Sort by ºC" />
 
     <Button
         android:id="@+id/button_PopUp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/buttonCompareByTemp"
-        android:layout_centerHorizontal="true"
+        android:layout_height="35dp"
+        android:layout_above="@+id/buttonCompareByTemp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="248dp"
         android:onClick="onButtonShowPopupWindowClick"
         android:text="PopUp" />
 
-    <Spinner
-        android:id="@+id/spinner_PopUp2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/button_PopUp"
-        android:layout_above="@id/buttonGoToMain2"
-        android:text="Max rows"
 
-        />
 </RelativeLayout>

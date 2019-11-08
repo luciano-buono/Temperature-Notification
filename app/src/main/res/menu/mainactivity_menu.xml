@@ -5,4 +5,8 @@
         android:id="@+id/Options_button"
         android:title="Options"
         app:showAsAction="never"/>
+<!--    <item-->
+<!--        android:id="@+id/Debug_button"-->
+<!--        android:title="Debug menu"-->
+<!--        app:showAsAction="never"/>-->
 </menu>

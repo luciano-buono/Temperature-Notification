@@ -37,7 +37,7 @@ public class Temperature implements Serializable,Comparable<Temperature>, Compar
 
 
     public  Date getDateDate() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyy-mm-dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
         Date date = new Date();
         try{
             date = formatter.parse(this.date);
